@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+    .cell {
+      display: inline-block;
+      width: 100px;
+      height: 100px;
+      line-height: 100px;
+      text-align: center;
+      background-color: aqua;
+      border: 1px solid #fff;
+      font-size: 50px;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+  <div id="broad"></div>
+  <script>
+    let pattern = [
+      0, 0, 0,
+      0, 0, 0,
+      0, 0, 0
+    ];
+    let color = 2;
+    function show() {
+      const board = document.getElementById('broad');
+      board.innerHTML = "";
+      for(let i = 0; i < 3; i++) {
+        for(let j = 0; j < 3; j++) {
+          let cell = document.createElement('div');
+          cell.classList.add('cell');
+          cell.innerText =
+            pattern[i * 3 + j] === 2 ? '⭕️' :
+            pattern[i * 3 + j] === 1 ? '❌' : '';
+          cell.addEventListener('click', () => move(i, j));
+          board.appendChild(cell);
+        }
+        const br = document.createElement('br');
+        board.appendChild(br);
+      }
+    }
+    function move(i, j) {
+      pattern[i * 3 + j] = color;
+      if (check(pattern, color)) {
+        alert(color === 2 ? '⭕️ is winner' : '❌ is winner');
+      }
+      show();
+      color = 3 - color;
+      if (willWin(pattern, color)) {
+        console.log(color === 2 ? '⭕️ is winner' : '❌ is winner');
+      }
+    }
+    function check(pattern, color) {
+      // 检查行是否相同
+      for(let i = 0; i < 3; i++) {
+        let win = true;
+        for(let j = 0; j < 3; j++) {
+          if (pattern[i * 3 + j] !== color) {
+            win = false;
+          }
+        }
+        if (win) {
+          return true;
+        }
+      }
+      // 检查列是否相同
+      for (let i = 0; i < 3; i++) {
+        let win = true;
+        for (let j = 0; j < 3; j++) {
+          if (pattern[j * 3 + i] !== color) {
+            win = false;
+          }
+        }
+        if (win) {
+          return true;
+        }
+      }
+      // 检查对角线是否相同
+      if (pattern[0] === pattern[4] && pattern[4] === pattern[8]) {
+        return true;
+      }
+      if (pattern[2] === pattern[4] && pattern[4] == pattern[6]) {
+        return true;
+      }
+      return false;
+    }
+    function clone(pattern) {
+      return Object.create(pattern);
+    }
+    function willWin(pattern, color) {
+      for (let i = 0; i < 3; i++) {
+        for(let j = 0; j < 3; j ++) {
+          if (pattern[i * 3 + j])
+            continue;
+          let tmp = clone(pattern);
+          tmp[i * 3 + j] = color;
+          if (check(tmp, color)) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+    show();
+  </script>
+</body>
+</html>
