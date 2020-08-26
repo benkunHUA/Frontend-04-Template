@@ -26,9 +26,9 @@
   <div id="broad"></div>
   <script>
     let pattern = [
-      0, 0, 0,
-      0, 0, 0,
-      0, 0, 0
+      [0, 1, 0],
+      [0, 2, 0],
+      [0, 0, 0]
     ];
     let color = 2;
     function show() {
@@ -39,24 +39,32 @@
           let cell = document.createElement('div');
           cell.classList.add('cell');
           cell.innerText =
-            pattern[i * 3 + j] === 2 ? '⭕️' :
-            pattern[i * 3 + j] === 1 ? '❌' : '';
-          cell.addEventListener('click', () => move(i, j));
+            pattern[i][j] === 2 ? '⭕️' :
+            pattern[i][j] === 1 ? '❌' : '';
+          cell.addEventListener('click', () => move(j, i));
           board.appendChild(cell);
         }
         const br = document.createElement('br');
         board.appendChild(br);
       }
     }
-    function move(i, j) {
-      pattern[i * 3 + j] = color;
+    function move(x, y) {
+      pattern[x][y] = color;
       if (check(pattern, color)) {
         alert(color === 2 ? '⭕️ is winner' : '❌ is winner');
+        show();
+        return;
       }
       show();
       color = 3 - color;
-      if (willWin(pattern, color)) {
-        console.log(color === 2 ? '⭕️ is winner' : '❌ is winner');
+      console.log(bestChoice(pattern, color).point);
+      if (color === 1) {
+        const p = bestChoice(pattern, color).point;
+        console.log(p);
+        if (p) {
+          move(p[0], p[1]);
+        }
+        
       }
     }
     function check(pattern, color) {
@@ -64,7 +72,7 @@
       for(let i = 0; i < 3; i++) {
         let win = true;
         for(let j = 0; j < 3; j++) {
-          if (pattern[i * 3 + j] !== color) {
+          if (pattern[i][j] !== color) {
             win = false;
           }
         }
@@ -76,7 +84,7 @@
       for (let i = 0; i < 3; i++) {
         let win = true;
         for (let j = 0; j < 3; j++) {
-          if (pattern[j * 3 + i] !== color) {
+          if (pattern[j][i] !== color) {
             win = false;
           }
         }
@@ -85,32 +93,61 @@
         }
       }
       // 检查对角线是否相同
-      if (pattern[0] === pattern[4] && pattern[4] === pattern[8]) {
+      if (pattern[0][0] === pattern[1][1] && pattern[1][1] === pattern[2][2]) {
         return true;
       }
-      if (pattern[2] === pattern[4] && pattern[4] == pattern[6]) {
+      if (pattern[0][2] === pattern[1][1] && pattern[1][1] == pattern[2][0]) {
         return true;
       }
       return false;
     }
     function clone(pattern) {
-      return Object.create(pattern);
+      return JSON.parse(JSON.stringify(pattern));
     }
     function willWin(pattern, color) {
       for (let i = 0; i < 3; i++) {
         for(let j = 0; j < 3; j ++) {
-          if (pattern[i * 3 + j])
+          if (pattern[i][j])
             continue;
           let tmp = clone(pattern);
-          tmp[i * 3 + j] = color;
+          tmp[i][j] = color;
           if (check(tmp, color)) {
-            return true;
+            return [j, i];
           }
         }
       }
-      return false;
+      return null;
+    }
+    function bestChoice(pattern, color) {
+      let p = willWin(pattern, color);
+      if (p) {
+        return {
+          point: p,
+          result: 1
+        }
+      }
+      let result = -2;
+      let point = null;
+      for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+          if (pattern[i][j])
+            continue;
+          let tmp = clone(pattern);
+          tmp[i][j] = color;
+          const r = bestChoice(tmp, 3 - color).result;
+          if (-r > result) {
+            result = -r;
+            point = [j, i];
+          }
+        }
+      }
+      return {
+        point: point,
+        result: point ? result : 0
+      }
     }
     show();
+    console.log(bestChoice(pattern, color));
   </script>
 </body>
 </html>
