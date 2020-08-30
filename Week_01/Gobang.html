@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>五子棋</title>
+</head>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+  }
+  #board {
+    position: relative;
+    width: 700px;
+    height: 700px;
+    left: 100px;
+    top: 100px;
+    background-color: wheat;
+  }
+  .point {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: transparent;
+    z-index: 999;
+    cursor: pointer;
+  }
+
+  .line-row {
+    position: absolute;
+    left: 0;
+    width: 700px;
+    height: 1px;
+    background-color: #000;
+  }
+  .line-column {
+    position: absolute;
+    top: 0;
+    width: 1px;
+    height: 700px;
+    background-color: #000;
+  }
+</style>
+<body>
+  <div id="board"></div>
+  <script>
+    let pattern = [];
+    let color = 1;
+    function Point(x, y) {
+      this.x = x;
+      this.y = y;
+      this.color = 0;
+    }
+    function initData() {
+      for(let i = 0; i < 15; i++) {
+        pattern.push([]);
+        for(let j = 0; j < 15; j++) {
+          const point = new Point(i, j);
+          pattern[i].push(point);
+        }
+      }
+    }
+    function render() {
+      const board = document.getElementById('board');
+      for(let i = 0; i < 15; i++) {
+        let row = document.createElement('div');
+        row.classList.add('line-row');
+        row.style.top = i * 50 + 'px';
+        let column = document.createElement('div');
+        column.classList.add('line-column');
+        column.style.left = i * 50 + 'px';
+        board.appendChild(row);
+        board.appendChild(column);
+        for(let j = 0; j < 15; j++) {
+           let point = document.createElement('div');
+           point.classList.add('point');
+           point.style.top = i * 50 - 20 + 'px';
+           point.style.left = j * 50 - 20 + 'px';
+           point.addEventListener('click', (e) => move(e, i, j));
+           board.appendChild(point);
+        }
+      }
+    }
+    function move(e, y, x) {
+      pattern[x][y] = color;
+      const bg = color === 1 ? '#000' : '#fff';
+      e.target.style.background = bg;
+      if(check(pattern, color, y, x)) {
+        alert(color === 2 ? '白棋获胜' : '黑棋获胜');
+        return;
+      }
+      color = 3 - color;
+    }
+    function check(pattern, color, y, x) {
+      // 校验水平方向
+      let count = 1;
+      let left = x - 1, right = x + 1;
+      while(left >= 0 && pattern[left][y] === color) {
+        count++;
+        left--;
+      }
+      while(right < 15 && pattern[right][y] === color) {
+        count++;
+        right++;
+      }
+      if(count >= 5) {
+        return true;
+      }
+      // 校验垂直方向
+      count = 1;
+      let top = y - 1, bottom = y + 1;
+      while(top >= 0 && pattern[x][top] === color) {
+        count++;
+        top--;
+      }
+      while(bottom < 15 && pattern[x][bottom] === color) {
+        count++;
+        bottom++;
+      }
+      if(count >= 5) {
+        return true;
+      }
+      // 校验左上到右下
+      count = 1;
+      left = x - 1, right = x + 1;
+      top = y - 1, bottom = y + 1;
+      while(left >=0 && top >= 0 && pattern[left][top] === color) {
+        count++;
+        left--;
+        top--;
+      }
+      while(right < 15 && bottom < 15 && pattern[right][bottom] === color) {
+        count;
+        right++;
+        bottom++;
+      }
+      if(count >= 5) {
+        return true;
+      }
+      // 校验左下到右上
+      count = 1;
+      left = x - 1, right = x + 1;
+      top = y - 1, bottom = y + 1;
+      while(left >=0 && bottom < 15 && pattern[left][bottom] === color) {
+        count++;
+        left--;
+        bottom++;
+      }
+      while(right < 15 && top >= 0 && pattern[right][top] === color) {
+        count++;
+        right++;
+        top--;
+      }
+      if(count >= 5) {
+        return true;
+      }
+      return false;
+    }
+    initData();
+    render();
+  </script>
+</body>
+</html>
