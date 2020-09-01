@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>地图编辑器</title>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+      }
+      #container {
+        display: flex;
+        width: 800px;
+        flex-wrap: wrap;
+      }
+      .cell {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        line-height: 6px;
+        vertical-align: middle;
+        background-color: gray;
+        border: 1px solid #fff;
+      }
+    </style>
+</head>
+<body>
+  <div id="container"></div>
+  <script>
+    let map = Array(10000).fill(0);
+
+    let container = document.getElementById('container');
+    for(let y = 0; y < 100; y++) {
+      for(let x = 0; x < 100; x++) {
+        let cell = document.createElement('div');
+        cell.classList.add('cell');
+        cell.classList.add(y * 10 + x);
+        if(map[y * 100 + x] === 1) {
+          cell.style.backgroundColor = '#000';
+        }
+        cell.addEventListener('mousemove', () => {
+          if(mousedown) {
+            if(clear) {
+              cell.style.backgroundColor = '';
+            } else {
+              cell.style.backgroundColor = '#000';
+            }
+          }
+        })
+        container.appendChild(cell);
+      }
+    }
+    let mousedown = false;
+    let clear = false;
+    document.addEventListener('mousedown', e => {
+      mousedown = true;
+      clear = (e.which === 3);
+    });
+    document.addEventListener('mouseup', () => mousedown = false);
+    document.addEventListener('contextmenu', e => e.preventDefault());
+  </script>
+</body>
+</html>
