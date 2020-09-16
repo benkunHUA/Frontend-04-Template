@@ -1,0 +1,11 @@
+<MultiplicationExpression>::=<Number>|
+        <MultiplicationExpression>"*"<Number>|
+        <MultiplicationExpression>"/"<Number>
+<AddtiveExpression>::=<MultiplicationExpression>|
+        <AddtiveExpression>"+"<MultiplicationExpression>|
+        <AddtiveExpression>"-"<MultiplicationExpression>
+
+<BracketExpression>::=<Number>|
+        "("<AddtiveExpression>")"|
+        "("<AddtiveExpression>")""*"<MultiplicationExpression>|
+        "("<AddtiveExpression>")""\"<MultiplicationExpression>
