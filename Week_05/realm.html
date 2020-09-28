@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>realm</title>
+</head>
+<body>
+  <div id="container" style="width: 1000px; height: 600px;"></div>
+  <script src="https://gw.alipayobjects.com/os/lib/antv/g6/3.7.1/dist/g6.min.js"></script>
+  <script>
+    const width = document.getElementById('container').scrollWidth;
+    const height = document.getElementById('container').scrollHeight;
+    const data = {
+      "id": "realms",
+      "children": [
+        {
+          "id": "values",
+          "children": [
+            { "id": "Infinity" },
+            { "id": "NaN" },
+            { "id": "undefined" }
+          ]
+        },
+        {
+          "id": "functions",
+          "children": [
+            { "id": "eval" },
+            { "id": "isFinite" },
+            { "id": "isNaN" },
+            { "id": "parseFloat" },
+            { "id": "parseInt" },
+            { "id": "decodeURI" },
+            { "id": "decodeURIComponent" },
+            { "id": "encodeURI" },
+            { "id": "encodeURIComponent" },
+          ]
+        },
+        {
+          "id": "Construetor",
+          "children": [
+            { "id": "Array" },
+            { "id": "Date" },
+            { "id": "RegExp" },
+            { "id": "Promise" },
+            { "id": "Proxy" },
+            { "id": "Map" },
+            { "id": "WeakMap" },
+            { "id": "Set" },
+            { "id": "WeakSet" },
+            { "id": "Function" },
+            { "id": "Boolean" },
+            { "id": "String" },
+            { "id": "Number" },
+            { "id": "Symbol" },
+            { "id": "Object" },
+            { "id": "Error" },
+            { "id": "EvalError" },
+            { "id": "RangeError" },
+            { "id": "ReferenceError" },
+            { "id": "SyntaxError" },
+            { "id": "TypeError" },
+            { "id": "URIError" },
+            { "id": "ArrayBuffer" },
+            { "id": "SharedArrayBuffer" },
+            { "id": "DataView" },
+            { "id": "Typed" },
+            { "id": "Float32Array" },
+            { "id": "Float64Array" },
+            { "id": "Int8Array" },
+            { "id": "Int16Array" },
+            { "id": "Int32Array" },
+            { "id": "UInt8Array" },
+            { "id": "UInt16Array" },
+            { "id": "UInt32Array" },
+            { "id": "UInt8ClampedArray" }
+          ]
+        },  
+        {
+          "id": "namespace",
+          "children": [
+            { "id": "Atomics" },
+            { "id": "JSON" },
+            { "id": "Math" },
+            { "id": "Reflect" },
+          ]
+        }
+      ]
+    }
+
+    const graph = new G6.TreeGraph({
+      container: 'container',
+      width,
+      height,
+      modes: {
+        default: [
+          {
+            type: 'collapse-expand',
+            onChange: function onChange(item, collapsed) {
+              const data = item.get('model').data;
+              data.collapsed = collapsed;
+              return true;
+            },
+          },
+          'drag-canvas',
+          'zoom-canvas',
+        ],
+      },
+      defaultNode: {
+        size: 26,
+        anchorPoints: [
+          [0, 0.5],
+          [1, 0.5],
+        ],
+        style: {
+          fill: '#C6E5FF',
+          stroke: '#5B8FF9',
+        },
+      },
+      defaultEdge: {
+        type: 'cubic-horizontal',
+        style: {
+          stroke: '#A3B1BF',
+        },
+      },
+      layout: {
+        type: 'dendrogram',
+        direction: 'LR', // H / V / LR / RL / TB / BT
+        nodeSep: 30,
+        rankSep: 100,
+      },
+    });
+
+    graph.node(function (node) {
+      return {
+        label: node.id,
+        labelCfg: {
+          position: node.children && node.children.length > 0 ? 'left' : 'right',
+          offset: 5,
+        },
+      };
+    });
+
+    graph.data(data);
+    graph.render();
+    graph.fitView();
+  </script>
+</body>
+</html>
