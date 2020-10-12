@@ -35,3 +35,5 @@ URL(HTTP) =>  HTML(parse)   =>  DOM(css computing)  =>   DOM with CSS(layout)  =
 - response
 
 一个request对应一个response
+
+![response](./img/http-response.png)
